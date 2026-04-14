@@ -3,7 +3,7 @@ require_once 'config.php';
 $pdo = getConexion();
 
 // Datos del nuevo admin
-$nuevo_usuario = 'coordinador_itl'; 
+$nuevo_usuario = 'miguel_Alvadmin'; 
 $password_plana = 'itl2026'; // La que tú quieras
 $nombre_real = 'Juan Pérez';
 

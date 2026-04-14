@@ -156,3 +156,16 @@ td { padding: 15px; border-bottom: 1px solid #eee; }
     font-weight: bold;
     cursor: pointer;
 }
+
+.btn-salir{
+    background: var(--guinda-itl);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    width: 100%;
+    font-weight: bold;
+    cursor: pointer;
+    
+
+}

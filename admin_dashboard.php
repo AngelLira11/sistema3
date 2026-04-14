@@ -37,7 +37,7 @@ $alumnos = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
 <body>
     <header class="admin-header">
         <div class="header-content">
-            <img src="https://www.itlalaguna.edu.mx/images/logoitl.png" alt="Logo ITL" class="logo-min">
+            <img src="img/logotipo.png" alt="Logo ITL" class="logo-min">
             <h1>Control de Titulación</h1>
             <div class="user-info">
                 <span><i class="fas fa-user-shield"></i> <?= $_SESSION['admin_nombre'] ?? 'Administrador' ?></span>
