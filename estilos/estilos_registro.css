@@ -1,0 +1,113 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+
+#padre {
+    width: 100%; 
+    min-height: 100vh; 
+    background-image: url(../img/fondo_login2.png);
+    background-repeat:round;
+    display: flex;
+    justify-content: center; 
+    align-items: center;     
+    padding: 20px;           
+}
+
+#hijo {
+    width: 100%;             
+    max-width: 400px; 
+    background-color: blanchedalmond;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0px 10px 25px rgba(0,0,0,0.1); 
+}
+
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+}
+
+
+fieldset {
+    border: none; 
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+legend {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 15px;
+    text-align: center;
+    font-style: italic;
+}
+
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #444;
+}
+
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    background-color: white;
+    font-size: 14px;
+}
+
+input:focus, select:focus {
+    border-color: #007bff; 
+}
+
+
+button {
+    width: 100%;
+    margin-top: 25px;
+    padding: 14px;
+    background-color: #000;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background-color: gray;
+    color: #000;
+    transform: translateY(-1px); 
+}
+
+/* 3. AJUSTES PARA PANTALLAS GRANDES */
+
+@media (min-width: 768px) {
+    #hijo {
+        padding: 40px;
+        max-width: 450px; 
+    }
+
+    #padre {
+        background-color: #00ced1; 
+    }
+}

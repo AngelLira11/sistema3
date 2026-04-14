@@ -1,0 +1,11 @@
+
+/* ── Alertas (agregadas al estilos.css existente) ── */
+.alerta {
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 14px;
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+.alerta-error { background: #fdecea; color: #c0392b; border-left: 4px solid #c0392b; }
+.alerta-ok    { background: #eafaf1; color: #1e8449; border-left: 4px solid #27ae60; }
