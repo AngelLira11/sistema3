@@ -1,13 +1,9 @@
 <?php
-// ============================================
-// CONFIGURACIÓN DE BASE DE DATOS
-// Instituto Tecnológico de La Laguna
-// ============================================
-
+//db
 define('DB_HOST',   'localhost');
 define('DB_USER',   'root');        // Cambia si tu usuario de MySQL es diferente
 define('DB_PASS',   '');            // Cambia si tienes contraseña en MySQL
-define('DB_NAME',   'itl_titulacion');
+define('DB_NAME',   'titulacion');
 define('DB_CHARSET','utf8mb4');
 
 function getConexion(): PDO {

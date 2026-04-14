@@ -12,13 +12,11 @@
 session_start();
 require_once 'config.php';
 
-// Proteger página: solo alumnos con sesión activa
 if (empty($_SESSION['alumno_id'])) {
     header('Location: index.php');
     exit;
 }
 
-// Obtener datos actualizados del alumno
 $pdo  = getConexion();
 $stmt = $pdo->prepare("SELECT * FROM alumnos WHERE id = ? LIMIT 1");
 $stmt->execute([$_SESSION['alumno_id']]);
@@ -47,7 +45,6 @@ if (!$alumno) {
         <p>Aquí puedes consultar tus datos y generar tu constancia para titulación.</p>
     </div>
 
-    <!-- Tarjeta de datos del alumno -->
     <div class="tarjeta">
         <h3>📋 Tus datos registrados</h3>
         <div class="datos-grid">
@@ -78,7 +75,6 @@ if (!$alumno) {
         </div>
     </div>
 
-    <!-- Botón generar constancia -->
     <div class="acciones">
         <a href="generar_constancia.php" class="btn-pdf" target="_blank">
             🖨️ Generar Constancia de No Inconveniencia

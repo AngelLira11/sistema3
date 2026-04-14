@@ -9,7 +9,6 @@ if (empty($_SESSION['admin_id'])) {
 $pdo = getConexion();
 
 $buscar = $_GET['buscar'] ?? '';
-// IMPORTANTE: Ponemos 'anio' primero para que FETCH_GROUP lo use como llave
 $sql = "SELECT YEAR(fecha_registro) as anio, id, nombre, no_control, carrera, opcion_titulacion FROM alumnos";
 $params = [];
 
@@ -21,7 +20,6 @@ if (!empty($buscar)) {
 $sql .= " ORDER BY anio DESC, nombre ASC";
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
-// Ahora 'anio' es la llave y el resto de los datos (incluyendo id) están en el array
 $alumnos = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
 ?>
 

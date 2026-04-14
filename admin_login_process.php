@@ -2,7 +2,6 @@
 session_start();
 require_once 'config.php';
 
-// Solo aceptamos peticiones POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: admin_login.php');
     exit;
@@ -19,14 +18,11 @@ if (empty($usuario_input) || empty($password_input)) {
 try {
     $pdo = getConexion();
     
-    // 1. Sentencia Preparada: Buscamos al administrador por su nombre de usuario
     $stmt = $pdo->prepare("SELECT id, usuario, password, nombre FROM administradores WHERE usuario = ? LIMIT 1");
     $stmt->execute([$usuario_input]);
     $admin = $stmt->fetch();
 
-    // 2. Verificación de seguridad
     if ($admin && password_verify($password_input, $admin['password'])) {
-        // Regenerar el ID de sesión es una buena práctica contra "Session Fixation"
         session_regenerate_id(true);
 
         // Guardamos los datos en la sesión

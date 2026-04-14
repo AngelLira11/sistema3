@@ -7,7 +7,6 @@ $password   = trim($_POST['password'] ?? '');
 
 $pdo = getConexion();
 
-// PASO 1: Buscar en Alumnos
 $stmt = $pdo->prepare("SELECT * FROM alumnos WHERE email = ? LIMIT 1");
 $stmt->execute([$email_user]);
 $alumno = $stmt->fetch();
@@ -19,7 +18,6 @@ if ($alumno && password_verify($password, $alumno['password'])) {
     exit;
 }
 
-// PASO 2: Buscar en Administradores
 $stmt = $pdo->prepare("SELECT * FROM administradores WHERE usuario = ? LIMIT 1");
 $stmt->execute([$email_user]);
 $admin = $stmt->fetch();
@@ -32,6 +30,5 @@ if ($admin && password_verify($password, $admin['password'])) {
     exit;
 }
 
-// Si falla, regresa al index con error
 header('Location: index.php?error=credenciales');
 exit;

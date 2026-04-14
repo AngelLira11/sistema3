@@ -4,7 +4,7 @@ $pdo = getConexion();
 
 // Datos del nuevo admin
 $nuevo_usuario = 'miguel_Alvadmin'; 
-$password_plana = 'itl2026'; // La que tú quieras
+$password_plana = 'itl2026';
 $nombre_real = 'Juan Pérez';
 
 // LA CLAVE: Generar el hash dinámicamente

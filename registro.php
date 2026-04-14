@@ -14,7 +14,6 @@
 
         <h1>Crear Cuenta</h1>
 
-        <!-- Mensajes -->
         <?php if (!empty($_GET['error'])): ?>
             <div class="alerta alerta-error">
                 <?php
@@ -33,7 +32,6 @@
                 <fieldset>
                     <legend>Datos del Alumno</legend>
 
-                    <!-- Nombre completo -->
                     <div class="campo">
                         <label for="nombre">Nombre completo:</label>
                         <input type="text" id="nombre" name="nombre" required
@@ -41,7 +39,6 @@
                                value="<?= htmlspecialchars($_GET['nombre'] ?? '') ?>">
                     </div>
 
-                    <!-- No. de Control -->
                     <div class="campo">
                         <label for="no_control">No. de Control:</label>
                         <input type="text" id="no_control" name="no_control" required
@@ -50,7 +47,6 @@
                                value="<?= htmlspecialchars($_GET['no_control'] ?? '') ?>">
                     </div>
 
-                    <!-- Carrera -->
                     <div class="campo">
                         <label for="carrera">Carrera:</label>
                         <select id="carrera" name="carrera" required>
@@ -69,7 +65,6 @@
                         </select>
                     </div>
 
-                    <!-- Opción de Titulación -->
                     <div class="campo">
                         <label for="opcion_titulacion">Opción de Titulación:</label>
                         <select id="opcion_titulacion" name="opcion_titulacion" required>
@@ -84,11 +79,9 @@
                             <option value="Proyecto de Educación Dual">Proyecto de Educación Dual</option>
                             <option value="Tesis o Tesina">Tesis o Tesina</option>
                             <option value="Otro">Otro</option>
-                            <!-- Agrega más opciones aquí según sea necesario -->
                         </select>
                     </div>
 
-                    <!-- Email -->
                     <div class="campo">
                         <label for="email">Correo electrónico:</label>
                         <input type="email" id="email" name="email" required
@@ -96,7 +89,6 @@
                                value="<?= htmlspecialchars($_GET['email'] ?? '') ?>">
                     </div>
 
-                    <!-- Celular -->
                     <div class="campo">
                         <label for="celular">Celular:</label>
                         <input type="tel" id="celular" name="celular" required
@@ -106,7 +98,6 @@
                                value="<?= htmlspecialchars($_GET['celular'] ?? '') ?>">
                     </div>
 
-                    <!-- Contraseña -->
                     <div class="campo">
                         <label for="password">Contraseña:</label>
                         <input type="password" id="password" name="password" required
@@ -114,7 +105,6 @@
                                minlength="8">
                     </div>
 
-                    <!-- Confirmar Contraseña -->
                     <div class="campo">
                         <label for="password2">Confirmar contraseña:</label>
                         <input type="password" id="password2" name="password2" required

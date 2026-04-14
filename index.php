@@ -16,7 +16,6 @@
             <img src="img/logotipo.png" id="log" alt="Logo ITL">
         </div>
 
-        <!-- Mensaje de error/éxito -->
         <?php if (!empty($_GET['error'])): ?>
             <div class="alerta alerta-error">
                 <?php
