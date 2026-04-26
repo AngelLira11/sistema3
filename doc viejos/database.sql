@@ -20,9 +20,6 @@ CREATE TABLE IF NOT EXISTS alumnos (
     opcion_titulacion VARCHAR(100) NOT NULL,
     email           VARCHAR(150) NOT NULL UNIQUE,
     celular         VARCHAR(15)  NOT NULL,
-    fecha_egreso    DATE         NOT NULL,
-    graduacion      ENUM('Graduación 1','Graduación 2') NOT NULL,
-    anio_egreso     YEAR         NOT NULL,
     password        VARCHAR(255) NOT NULL,
     fecha_registro  DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
@@ -32,12 +29,3 @@ CREATE TABLE IF NOT EXISTS alumnos (
 -- ============================================
 CREATE INDEX idx_email      ON alumnos(email);
 CREATE INDEX idx_no_control ON alumnos(no_control);
-
--- ============================================
--- MIGRACIÓN: agregar columna graduacion
--- (Ejecutar solo si ya tienes la BD creada)
--- ============================================
--- ALTER TABLE alumnos
---     ADD COLUMN fecha_egreso DATE NOT NULL AFTER celular,
---     ADD COLUMN graduacion   ENUM('Graduación 1','Graduación 2') NOT NULL AFTER fecha_egreso,
---     ADD COLUMN anio_egreso  YEAR NOT NULL AFTER graduacion;

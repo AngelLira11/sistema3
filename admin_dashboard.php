@@ -9,7 +9,9 @@ if (empty($_SESSION['admin_id'])) {
 $pdo = getConexion();
 
 $buscar = $_GET['buscar'] ?? '';
-$sql = "SELECT YEAR(fecha_registro) as anio, id, nombre, no_control, carrera, opcion_titulacion FROM alumnos";
+
+$sql = "SELECT anio_egreso, graduacion, id, nombre, no_control, carrera, opcion_titulacion
+        FROM alumnos";
 $params = [];
 
 if (!empty($buscar)) {
@@ -17,10 +19,20 @@ if (!empty($buscar)) {
     $params = ["%$buscar%", "%$buscar%"];
 }
 
-$sql .= " ORDER BY anio DESC, nombre ASC";
+$sql .= " ORDER BY anio_egreso DESC, graduacion ASC, nombre ASC";
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
-$alumnos = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
+$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Agrupar: $grupos[2026]['Graduación 1'] = [alumno, ...]
+$grupos = [];
+foreach ($rows as $row) {
+    $anio = (int)$row['anio_egreso'];
+    $grad = $row['graduacion'];
+    $grupos[$anio][$grad][] = $row;
+}
+// Ordenar años descendente (2027 arriba, 2026 abajo)
+krsort($grupos);
 ?>
 
 <!DOCTYPE html>
@@ -55,45 +67,62 @@ $alumnos = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
             </form>
         </section>
 
-        <?php if (empty($alumnos)): ?>
+        <?php if (empty($grupos)): ?>
             <div class="no-results">No se encontraron estudiantes registrados.</div>
         <?php endif; ?>
 
-        <?php foreach ($alumnos as $anio => $lista): ?>
-            <section class="generacion-card">
-                <div class="card-header">
-                    <h2><i class="fas fa-graduation-cap"></i> Generación <?= $anio ?></h2>
-                    <span class="badge"><?= count($lista) ?> Alumnos</span>
-                </div>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>No. Control</th>
-                                <th>Nombre Completo</th>
-                                <th>Carrera</th>
-                                <th>Opción de Titulación</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($lista as $al): ?>
-                            <tr>
-                                <td class="txt-bold"><?= htmlspecialchars($al['no_control']) ?></td>
-                                <td><?= htmlspecialchars($al['nombre']) ?></td>
-                                <td><span class="carrera-tag"><?= htmlspecialchars($al['carrera']) ?></span></td>
-                                <td><?= htmlspecialchars($al['opcion_titulacion']) ?></td>
-                               <td>
-    <a href="ver_alumno.php?id=<?= $al['id'] ?>" class="btn-accion">
-        <i class="fas fa-eye"></i> Revisar Expediente
-    </a>
-</td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
+        <?php foreach ($grupos as $anio => $graduaciones): ?>
+            <div class="generacion-bloque">
+
+                <h2 class="generacion-titulo">
+                    <i class="fas fa-graduation-cap"></i> Generación <?= $anio ?>
+                </h2>
+
+                <?php foreach (['Graduación 1', 'Graduación 2'] as $grad):
+                    if (!isset($graduaciones[$grad])) continue;
+                    $lista    = $graduaciones[$grad];
+                    $es_grad1 = ($grad === 'Graduación 1');
+                ?>
+                <section class="generacion-card">
+                    <div class="card-header <?= $es_grad1 ? 'grad1' : 'grad2' ?>">
+                        <h3>
+                            <i class="fas fa-<?= $es_grad1 ? 'sun' : 'snowflake' ?>"></i>
+                            <?= $grad ?> — <?= $anio ?>
+                        </h3>
+                        <span class="badge"><?= count($lista) ?> Alumnos</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>No. Control</th>
+                                    <th>Nombre Completo</th>
+                                    <th>Carrera</th>
+                                    <th>Opción de Titulación</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($lista as $al): ?>
+                                <tr>
+                                    <td class="txt-bold"><?= htmlspecialchars($al['no_control']) ?></td>
+                                    <td><?= htmlspecialchars($al['nombre']) ?></td>
+                                    <td><span class="carrera-tag"><?= htmlspecialchars($al['carrera']) ?></span></td>
+                                    <td><?= htmlspecialchars($al['opcion_titulacion']) ?></td>
+                                    <td>
+                                        <a href="ver_alumno.php?id=<?= $al['id'] ?>" class="btn-accion">
+                                            <i class="fas fa-eye"></i> Revisar Expediente
+                                        </a>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+                <?php endforeach; ?>
+
+            </div>
         <?php endforeach; ?>
     </main>
 </body>

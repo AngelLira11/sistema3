@@ -99,22 +99,6 @@
                     </div>
 
                     <div class="campo">
-                        <label for="fecha_egreso">Fecha de egreso:</label>
-                        <input type="date" id="fecha_egreso" name="fecha_egreso" required
-                               value="<?= htmlspecialchars($_GET['fecha_egreso'] ?? '') ?>">
-                        <small>Selecciona la fecha aproximada de tu graduación</small>
-                    </div>
-
-                    <div class="campo">
-                        <label for="graduacion">Graduación:</label>
-                        <select id="graduacion" name="graduacion" required>
-                            <option value="" disabled selected>Selecciona tu graduación</option>
-                            <option value="Graduación 1">Graduación 1 (Mar-Abr)</option>
-                            <option value="Graduación 2">Graduación 2 (Nov-Dic)</option>
-                        </select>
-                    </div>
-
-                    <div class="campo">
                         <label for="password">Contraseña:</label>
                         <input type="password" id="password" name="password" required
                                placeholder="Mínimo 8 caracteres"

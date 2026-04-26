@@ -59,12 +59,6 @@ if (!$al) {
                     <p><strong>Opción:</strong> <?= htmlspecialchars($al['opcion_titulacion']) ?></p>
                     <p><strong>Email:</strong> <?= htmlspecialchars($al['email']) ?></p>
                     <p><strong>Teléfono:</strong> <?= htmlspecialchars($al['celular']) ?></p>
-                    <p><strong>Graduación:</strong>
-                        <?= htmlspecialchars($al['graduacion']) ?> — <?= (int)$al['anio_egreso'] ?>
-                    </p>
-                    <p><strong>Fecha de egreso:</strong>
-                        <?= date('d/m/Y', strtotime($al['fecha_egreso'])) ?>
-                    </p>
                 </div>
             </section>
 

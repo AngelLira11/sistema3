@@ -72,14 +72,6 @@ if (!$alumno) {
                 <span class="etiqueta">Celular</span>
                 <span class="valor"><?= htmlspecialchars($alumno['celular']) ?></span>
             </div>
-            <div class="dato">
-                <span class="etiqueta">Graduación</span>
-                <span class="valor"><?= htmlspecialchars($alumno['graduacion']) ?> — <?= (int)$alumno['anio_egreso'] ?></span>
-            </div>
-            <div class="dato">
-                <span class="etiqueta">Fecha de Egreso</span>
-                <span class="valor"><?= date('d/m/Y', strtotime($alumno['fecha_egreso'])) ?></span>
-            </div>
         </div>
     </div>
 
