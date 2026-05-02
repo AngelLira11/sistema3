@@ -29,4 +29,13 @@ $nuevo_usuario = 'miguel_alv';
 $password_plana = 'itltitulacion26';
 $nombre_real = 'Miguel Alvarez';
 
+
+
+
+Cuentas a dar de alta
+
+Nombre: Laura    Contraseña: ItlTitulacionAlumnos
+Nombre: Karina   Contraseña: ItlTitulacionAlumnos
+Nombre: Vanessa  Contraseña: ItlTitulacionAlumnos 
+Nombre: Myrna    Contraseña: ItlTitulacionAlumnos 
 -->
