@@ -109,8 +109,8 @@
                         <label for="graduacion">Graduación:</label>
                         <select id="graduacion" name="graduacion" required>
                             <option value="" disabled selected>Selecciona tu graduación</option>
-                            <option value="Graduación 1">Graduación 1 (Mar-Abr)</option>
-                            <option value="Graduación 2">Graduación 2 (Nov-Dic)</option>
+                            <option value="1">Graduación 1 (Mar-Abr)</option>
+                            <option value="2">Graduación 2 (Nov-Dic)</option>
                         </select>
                     </div>
 

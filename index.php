@@ -59,6 +59,15 @@
 
     </div>
 </div>
-
+<script>
+    let clicks = 0;
+    document.getElementById('logo').addEventListener('click', function() {
+        clicks++;
+        if (clicks === 20) {
+            alert('Elaborado por:\nJose Angel Lira Hernandez\nMiguel Alvarez Mallen');
+            clicks = 0;
+        }
+    });
+</script>
 </body>
 </html>

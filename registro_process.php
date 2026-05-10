@@ -62,7 +62,8 @@ try {
     exit;
 
 } catch (Exception $e) {
-    header('Location: registro.php?error=campos');
-    exit;
+    // header('Location: registro.php?error=campos');
+    // exit;
+    die($e->getMessage()); // Linea para debug (borrar en producción)
 }
 ?>
