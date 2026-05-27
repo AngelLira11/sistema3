@@ -30,20 +30,22 @@ body {
 
 .logo-min { height: 50px; }
 
-/* Buscador */
-.container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
-
+/* BUSCADOR Y FILTROS */
 .buscador-pro {
     display: flex;
-    gap: 15px;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
     background: var(--blanco);
-    padding: 20px;
+    padding: 15px 20px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    max-width: 1160px;
+    margin: 20px auto;
 }
 
 .input-group {
-    flex-grow: 1;
+    min-width: 380px;
     position: relative;
     display: flex;
     align-items: center;
@@ -53,24 +55,83 @@ body {
 
 .input-group input {
     width: 100%;
-    padding: 12px 12px 12px 45px;
+    padding: 10px 12px 10px 40px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    font-size: 16px;
+    font-size: 0.9rem;
+}
+
+.filtros-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.filtros-grid select {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 0.85rem;
+    min-width: 130px;
+    cursor: pointer;
+}
+
+.filtros-acciones {
+    display: flex;
+    gap: 8px;
 }
 
 .btn-buscar {
     background-color: var(--guinda-itl);
     color: white;
     border: none;
-    padding: 0 25px;
+    padding: 10px 35px;
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
+    font-size: 0.9rem;
     transition: 0.3s;
+    white-space: nowrap;
 }
 
 .btn-buscar:hover { background-color: #5a0000; }
+
+.btn-limpiar {
+    background: #6c757d;
+    color: white;
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    transition: background 0.25s;
+}
+
+.btn-limpiar:hover { background: #545b62; }
+
+/* Bloques de generación */
+.generacion-bloque {
+    max-width: 1200px;
+    margin: 0 auto 2.5rem auto;
+    padding: 0 20px;
+}
+
+.generacion-titulo {
+    font-size: 1.3rem;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 3px solid #003087;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.generacion-titulo i { color: #003087; }
 
 /* Tarjetas de Generación */
 .generacion-card {
@@ -90,6 +151,19 @@ body {
     border-left: 5px solid var(--oro-itl);
 }
 
+.card-header.grad1,
+.card-header.grad2 {
+    color: #ffffff;
+}
+
+.card-header.grad1 {
+    background: linear-gradient(135deg, #003087 0%, #0050c8 100%) !important;
+}
+
+.card-header.grad2 {
+    background: linear-gradient(135deg, #1a1a4e 0%, #003087 100%) !important;
+}
+
 /* Tabla */
 table { width: 100%; border-collapse: collapse; }
 th { background: #f8f9fa; padding: 15px; text-align: left; color: #555; border-bottom: 2px solid #eee; }
@@ -107,6 +181,30 @@ td { padding: 15px; border-bottom: 1px solid #eee; }
     font-weight: bold;
 }
 
+/* Exportar */
+.exportar-section {
+    display: flex;
+    justify-content: center;
+    max-width: 1200px;
+    margin: 0 auto 2rem auto;
+    padding: 0 20px;
+}
+
+.btn-exportar {
+    background: var(--guinda-itl);
+    color: white;
+    text-decoration: none;
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.25s;
+}
+
+/* Expediente */
 .bg-light { background-color: #f0f2f5; }
 .btn-back { color: white; text-decoration: none; font-weight: bold; }
 
@@ -157,7 +255,7 @@ td { padding: 15px; border-bottom: 1px solid #eee; }
     cursor: pointer;
 }
 
-.btn-salir{
+.btn-salir {
     background: var(--guinda-itl);
     color: white;
     border: none;
@@ -166,31 +264,4 @@ td { padding: 15px; border-bottom: 1px solid #eee; }
     width: 100%;
     font-weight: bold;
     cursor: pointer;
-    
-
-}
-/* ── Bloques de generación ───────────────────── */
-.generacion-bloque {
-    margin-bottom: 2.5rem;
-}
-.generacion-titulo {
-    font-size: 1.3rem;
-    color: #1a1a2e;
-    margin-bottom: 1rem;
-    padding-bottom: 0.4rem;
-    border-bottom: 3px solid #003087;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.generacion-titulo i { color: #003087; }
-
-/* Graduación 1 — azul primavera */
-.card-header.grad1 {
-    background: linear-gradient(135deg, #003087 0%, #0050c8 100%) !important;
-}
-
-/* Graduación 2 — azul invierno más oscuro */
-.card-header.grad2 {
-    background: linear-gradient(135deg, #1a1a4e 0%, #003087 100%) !important;
 }

@@ -41,7 +41,7 @@ if (!$alumno) {
 <div class="contenedor">
 
     <div class="bienvenida">
-        <h1>Bienvenido, <?= htmlspecialchars($alumno['nombre']) ?></h1>
+        <h1>Hola!, <?= htmlspecialchars($alumno['nombre']) ?></h1>
         <p>Aquí puedes consultar tus datos y generar tu constancia para titulación.</p>
     </div>
 
@@ -84,6 +84,9 @@ if (!$alumno) {
     </div>
 
     <div class="acciones">
+        <a href="editar_datos.php" class="btn-editar">
+            ✏️ Editar mis datos
+        </a>
         <a href="generar_constancia.php" class="btn-pdf" target="_blank">
             🖨️ Generar Constancia de No Inconveniencia
         </a>
