@@ -125,13 +125,13 @@ body {
     color: #1a1a2e;
     margin-bottom: 1rem;
     padding-bottom: 0.4rem;
-    border-bottom: 3px solid #003087;
+    border-bottom: 3px solid #5a0000;
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.generacion-titulo i { color: #003087; }
+.generacion-titulo i { color: #5a0000; }
 
 /* Tarjetas de Generación */
 .generacion-card {
@@ -157,11 +157,11 @@ body {
 }
 
 .card-header.grad1 {
-    background: linear-gradient(135deg, #003087 0%, #0050c8 100%) !important;
+    background: linear-gradient(135deg, #5a0000 0%, #D10000 100%) !important;
 }
 
 .card-header.grad2 {
-    background: linear-gradient(135deg, #1a1a4e 0%, #003087 100%) !important;
+    background: linear-gradient(135deg, #5a0000 0%, #D10000 100%) !important;
 }
 
 /* Tabla */

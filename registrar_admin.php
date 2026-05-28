@@ -3,9 +3,9 @@ require_once 'config.php';
 $pdo = getConexion();
 
 // Datos del nuevo admin
-$nuevo_usuario = 'miguel_alv'; 
-$password_plana = 'itltitulacion26';
-$nombre_real = 'Miguel Alvarez';
+$nuevo_usuario = 'Myrna'; 
+$password_plana = 'ItlTitulacionAlumnos';
+$nombre_real = 'TecLaguna';
 
 // LA CLAVE: Generar el hash dinámicamente
 $password_encriptada = password_hash($password_plana, PASSWORD_BCRYPT);
