@@ -5,22 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="estilos/estilos_registro.css">
     <link rel="stylesheet" href="estilos/alertas.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <title>Registro — ITL Titulación</title>
 </head>
 <body>
+
+<?php
+session_start();
+
+// Si hay un error, resetear el contador (permitir que reintente)
+if (!empty($_GET['error'])) {
+    $_SESSION['form_load_time'] = time();
+} elseif (empty($_SESSION['form_load_time'])) {
+    // Generar timestamp cuando se carga el formulario por primera vez
+    $_SESSION['form_load_time'] = time();
+}
+?>
 
 <div id="padre">
     <div id="hijo">
 
         <h1>Crear Cuenta</h1>
+        <p class="subtitulo">Etapa 1 de 2: Crea tu cuenta</p>
 
         <?php if (!empty($_GET['error'])): ?>
             <div class="alerta alerta-error">
                 <?php
                     $errores = [
                         'campos'     => 'Por favor completa todos los campos.',
-                        'duplicado'  => 'El correo o número de control ya están registrados.',
+                        'duplicado'  => 'El correo ya está registrado.',
                         'password'   => 'Las contraseñas no coinciden.',
+                        'captcha'    => 'El código CAPTCHA es incorrecto. Intenta de nuevo.',
+                        'demasiado_rapido' => 'Completaste el formulario muy rápido. Por favor, intenta de nuevo.',
+                        'bloqueado'  => 'Demasiados intentos fallidos. Intenta más tarde.',
                     ];
                     echo htmlspecialchars($errores[$_GET['error']] ?? 'Error en el registro.');
                 ?>
@@ -29,89 +46,17 @@
 
         <div id="forms">
             <form action="registro_process.php" method="POST">
+                <input type="hidden" name="form_timestamp" value="<?php echo $_SESSION['form_load_time'] ?? time(); ?>">
+                
                 <fieldset>
-                    <legend>Datos del Alumno</legend>
-
-                    <div class="campo">
-                        <label for="nombre">Nombre completo:</label>
-                        <input type="text" id="nombre" name="nombre" required
-                               placeholder="Nombre completo"
-                               value="<?= htmlspecialchars($_GET['nombre'] ?? '') ?>">
-                    </div>
-
-                    <div class="campo">
-                        <label for="no_control">No. de Control:</label>
-                        <input type="text" id="no_control" name="no_control" required
-                               placeholder="Ej. 21130001"
-                               maxlength="20"
-                               value="<?= htmlspecialchars($_GET['no_control'] ?? '') ?>">
-                    </div>
-
-                    <div class="campo">
-                        <label for="carrera">Carrera:</label>
-                        <select id="carrera" name="carrera" required>
-                            <option value="" disabled selected>Selecciona tu carrera</option>
-                            <option value="ING. SISTEMAS COMPUTACIONALES">ING. SISTEMAS COMPUTACIONALES</option>
-                            <option value="ING. ELÉCTRICA">ING. ELÉCTRICA</option>
-                            <option value="ING. ELECTRÓNICA">ING. ELECTRÓNICA</option>
-                            <option value="ING. INDUSTRIAL">ING. INDUSTRIAL</option>
-                            <option value="ING. MECÁNICA">ING. MECÁNICA</option>
-                            <option value="ING. MECATRÓNICA">ING. MECATRÓNICA</option>
-                            <option value="ING. QUÍMICA">ING. QUÍMICA</option>
-                            <option value="ING. GESTIÓN EMPRESARIAL">ING. GESTIÓN EMPRESARIAL</option>
-                            <option value="ING. EN ENERGÍAS RENOVABLES">ING. EN ENERGÍAS RENOVABLES</option>
-                            <option value="ING. EN SEMICONDUCTORES">ING. EN SEMICONDUCTORES</option>
-                            <option value="LIC. ADMINISTRACIÓN">LIC. ADMINISTRACIÓN</option>
-                        </select>
-                    </div>
-
-                    <div class="campo">
-                        <label for="opcion_titulacion">Opción de Titulación:</label>
-                        <select id="opcion_titulacion" name="opcion_titulacion" required>
-                            <option value="" disabled selected>Selecciona tu opción</option>
-                            <option value="Informe técnico de Residencia Profesional">Informe técnico de Residencia Profesional</option>
-                            <option value="Informe de Residencia Profesional">Informe de Residencia Profesional</option>
-                            <option value="Proyecto de Investigación y/o Desarrollo Tecnológico">Proyecto de Investigación y/o Desarrollo Tecnológico</option>
-                            <option value="Proyecto Integrador">Proyecto Integrador</option>
-                            <option value="Proyecto Productivo">Proyecto Productivo</option>
-                            <option value="Proyecto de Innovación Tecnológica">Proyecto de Innovación Tecnológica</option>
-                            <option value="Proyecto de Emprendedurismo">Proyecto de Emprendedurismo</option>
-                            <option value="Proyecto de Educación Dual">Proyecto de Educación Dual</option>
-                            <option value="Tesis o Tesina">Tesis o Tesina</option>
-                            <option value="Otro">Otro</option>
-                        </select>
-                    </div>
+                    <legend>Información de Cuenta</legend>
 
                     <div class="campo">
                         <label for="email">Correo electrónico:</label>
                         <input type="email" id="email" name="email" required
                                placeholder="tu@email.com"
                                value="<?= htmlspecialchars($_GET['email'] ?? '') ?>">
-                    </div>
-
-                    <div class="campo">
-                        <label for="celular">Celular:</label>
-                        <input type="tel" id="celular" name="celular" required
-                               placeholder="Ej. 8711234567"
-                               maxlength="15"
-                               pattern="[0-9]{10,15}"
-                               value="<?= htmlspecialchars($_GET['celular'] ?? '') ?>">
-                    </div>
-
-                    <div class="campo">
-                        <label for="fecha_egreso">Fecha de egreso:</label>
-                        <input type="date" id="fecha_egreso" name="fecha_egreso" required
-                               value="<?= htmlspecialchars($_GET['fecha_egreso'] ?? '') ?>">
-                        <small>Selecciona la fecha aproximada de tu graduación</small>
-                    </div>
-
-                    <div class="campo">
-                        <label for="graduacion">Graduación:</label>
-                        <select id="graduacion" name="graduacion" required>
-                            <option value="" disabled selected>Selecciona tu graduación</option>
-                            <option value="1">Graduación 1 (Mar-Abr)</option>
-                            <option value="2">Graduación 2 (Nov-Dic)</option>
-                        </select>
+                        <small>Usarás este correo para iniciar sesión</small>
                     </div>
 
                     <div class="campo">
@@ -127,10 +72,35 @@
                                placeholder="Repite tu contraseña"
                                minlength="8">
                     </div>
+                    <br>
+                    <fieldset class="captcha-fieldset">
+                        <div class="captcha-container">
+                            <legend class="captcha-legend">Verifica que no eres un robot</legend>
+                            
+                            <div class="captcha-image-wrapper">
+                                <img id="captcha-image" src="captcha.php?t=<?php echo time(); ?>" 
+                                     alt="CAPTCHA"
+                                     class="captcha-image">
+                                <button type="button" id="reload-captcha" class="captcha-reload" 
+                                        title="Generar nuevo CAPTCHA">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="captcha_input">Ingresa el código que ves arriba:</label>
+                            <input type="text" id="captcha_input" name="captcha_input" required
+                                   placeholder="6 caracteres"
+                                   maxlength="6"
+                                   autocomplete="off"
+                                   class="captcha-input">
+                        </div>
+                    </fieldset>
 
                 </fieldset>
 
-                <button type="submit">Registrarme</button>
+                <button type="submit">Continuar</button>
             </form>
         </div>
 
@@ -139,6 +109,41 @@
 
     </div>
 </div>
+
+<script>
+/**
+ * CAPTCHA Reload Handler
+ * Recarga la imagen CAPTCHA sin recargar la página
+ */
+document.addEventListener('DOMContentLoaded', function() {
+    const reloadBtn = document.getElementById('reload-captcha');
+    const captchaImg = document.getElementById('captcha-image');
+    
+    if (reloadBtn && captchaImg) {
+        reloadBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Obtener nuevo timestamp para cache-busting
+            fetch('reload_captcha.php')
+                .then(response => response.json())
+                .then(data => {
+                    // Recargar imagen con nuevo timestamp
+                    captchaImg.src = 'captcha.php?t=' + data.timestamp;
+                    
+                    // Limpiar campo de entrada
+                    document.getElementById('captcha_input').value = '';
+                    document.getElementById('captcha_input').focus();
+                })
+                .catch(error => {
+                    console.error('Error recargando CAPTCHA:', error);
+                    // Fallback: recargar manualmente
+                    captchaImg.src = 'captcha.php?t=' + new Date().getTime();
+                    document.getElementById('captcha_input').value = '';
+                });
+        });
+    }
+});
+</script>
 
 </body>
 </html>

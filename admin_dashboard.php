@@ -14,7 +14,7 @@ $opcion   = $_GET['opcion_titulacion'] ?? '';
 $anio_f   = $_GET['anio']             ?? '';
 $grad_f   = $_GET['graduacion']        ?? '';
 
-$sql    = "SELECT anio_egreso, graduacion, id, nombre, no_control, carrera, opcion_titulacion FROM alumnos WHERE 1=1";
+$sql    = "SELECT anio_egreso, graduacion, id, nombre, no_control, carrera, opcion_titulacion FROM alumnos WHERE 1=1 AND nombre != '' AND carrera != '' AND opcion_titulacion != '' AND celular != ''";
 $params = [];
 
 if (!empty($buscar)) {

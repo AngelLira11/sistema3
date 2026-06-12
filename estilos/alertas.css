@@ -9,3 +9,4 @@
 }
 .alerta-error { background: #fdecea; color: #c0392b; border-left: 4px solid #c0392b; }
 .alerta-ok    { background: #eafaf1; color: #1e8449; border-left: 4px solid #27ae60; }
+.alerta-exito { background: #eafaf1; color: #1e8449; border-left: 4px solid #27ae60; }

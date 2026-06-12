@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'config.php';
+require_once 'profile_check.php';
 
 if (empty($_SESSION['alumno_id'])) {
     header('Location: index.php');
@@ -8,12 +9,17 @@ if (empty($_SESSION['alumno_id'])) {
 }
 
 $pdo  = getConexion();
-$stmt = $pdo->prepare("SELECT * FROM alumnos WHERE id = ? LIMIT 1");
-$stmt->execute([$_SESSION['alumno_id']]);
-$alumno = $stmt->fetch();
+$alumno = getAlumnoById($pdo, $_SESSION['alumno_id']);
 
 if (!$alumno) {
     header('Location: index.php');
+    exit;
+}
+
+// Verificar que el perfil esté completo
+$profile_check = isProfileIncomplete($alumno);
+if ($profile_check['incomplete']) {
+    header('Location: complete_profile.php');
     exit;
 }
 
