@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'config.php';
+require_once 'profile_check.php';
 
 if (empty($_SESSION['alumno_id'])) {
     header('Location: index.php');
@@ -8,9 +9,7 @@ if (empty($_SESSION['alumno_id'])) {
 }
 
 $pdo  = getConexion();
-$stmt = $pdo->prepare("SELECT * FROM alumnos WHERE id = ? LIMIT 1");
-$stmt->execute([$_SESSION['alumno_id']]);
-$alumno = $stmt->fetch();
+$alumno = getAlumnoById($pdo, $_SESSION['alumno_id']);
 
 if (!$alumno) {
     session_destroy();
@@ -60,8 +59,8 @@ $opciones = [
             <div class="alerta alerta-error">
                 <?php
                     $errores = [
-                        'campos'     => 'Por favor completa todos los campos.',
-                        'duplicado'  => 'El correo o número de control ya están en uso.',
+                        'campos'     => 'Por favor completa todos los campos requeridos.',
+                        'duplicado'  => 'El número de control ya está en uso.',
                         'password'   => 'Las contraseñas no coinciden.',
                     ];
                     echo htmlspecialchars($errores[$_GET['error']] ?? 'Error al actualizar.');
@@ -112,10 +111,10 @@ $opciones = [
                     </div>
 
                     <div class="campo">
-                        <label for="email">Correo electrónico:</label>
-                        <input type="email" id="email" name="email" required
-                            placeholder="tu@email.com"
-                            value="<?= htmlspecialchars($alumno['email']) ?>">
+                        <label>Correo electrónico:</label>
+                        <div style="padding: 10px; background: #f5f5f5; border-radius: 4px; font-weight: 500;">
+                            <?= htmlspecialchars($alumno['email']) ?>
+                        </div>
                     </div>
 
                     <div class="campo">

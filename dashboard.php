@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="estilos/estilos_dashboard.css">
+    <link rel="stylesheet" href="estilos/alertas.css">
     <title>Mi Trámite — ITL</title>
 </head>
 <body>
@@ -11,6 +12,7 @@
 <?php
 session_start();
 require_once 'config.php';
+require_once 'profile_check.php';
 
 if (empty($_SESSION['alumno_id'])) {
     header('Location: index.php');
@@ -18,15 +20,16 @@ if (empty($_SESSION['alumno_id'])) {
 }
 
 $pdo  = getConexion();
-$stmt = $pdo->prepare("SELECT * FROM alumnos WHERE id = ? LIMIT 1");
-$stmt->execute([$_SESSION['alumno_id']]);
-$alumno = $stmt->fetch();
+$alumno = getAlumnoById($pdo, $_SESSION['alumno_id']);
 
 if (!$alumno) {
     session_destroy();
     header('Location: index.php');
     exit;
 }
+
+// Verificar si el perfil está incompleto
+redirectIfIncomplete($alumno);
 ?>
 
 <div class="header">
@@ -40,8 +43,20 @@ if (!$alumno) {
 
 <div class="contenedor">
 
+    <?php if (!empty($_GET['profile_completed'])): ?>
+        <div class="alerta alerta-exito">
+            ¡Perfil completado exitosamente! Ya puedes acceder a todas las funciones.
+        </div>
+    <?php endif; ?>
+
+    <?php if (!empty($_GET['ok'])): ?>
+        <div class="alerta alerta-exito">
+            Tus datos han sido actualizados correctamente.
+        </div>
+    <?php endif; ?>
+
     <div class="bienvenida">
-        <h1>Hola!, <?= htmlspecialchars($alumno['nombre']) ?></h1>
+        <h1>¡Hola, <?= htmlspecialchars($alumno['nombre']) ?>!</h1>
         <p>Aquí puedes consultar tus datos y generar tu constancia para titulación.</p>
     </div>
 
