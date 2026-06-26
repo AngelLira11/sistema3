@@ -85,6 +85,13 @@ $opciones = [
             <h1>Control de Titulación</h1>
             <div class="user-info">
                 <span><i class="fas fa-user-shield"></i> <?= $_SESSION['admin_nombre'] ?? 'Administrador' ?></span>
+                
+                <?php if (isset($_SESSION['admin_rol']) && $_SESSION['admin_rol'] == 1): ?>
+                    <a href="gestion_admins.php" class="btn-accion" style="background-color: #2c3e50; color: #fff; margin-right: 10px;">
+                        <i class="fas fa-users-cog"></i> Gestionar Admins
+                    </a>
+                <?php endif; ?>
+
                 <a href="logout.php" class="btn-salir">Salir</a>
             </div>
         </div>

@@ -36,8 +36,13 @@ $admin = $stmt->fetch();
 
 if ($admin && password_verify($password, $admin['password'])) {
     $_SESSION['admin_id'] = $admin['id'];
+    $_SESSION['admin_nombre'] = $admin['nombre']; // Aseguramos que se guarde el nombre para el navbar
     $_SESSION['es_admin'] = true;
     $_SESSION['rol'] = 'admin';
+    
+    // LA CLAVE AQUÍ: Guardamos el rol numérico (0 para Admin normal, 1 para SuperAdmin)
+    $_SESSION['admin_rol'] = $admin['rol']; 
+    
     header('Location: admin_dashboard.php');
     exit;
 }
