@@ -1,7 +1,8 @@
 <?php
 session_start();
-require_once 'config.php';
-require_once 'profile_check.php';
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../config/constants.php';
+require_once __DIR__ . '/../config/profile_check.php';
 
 if (empty($_SESSION['alumno_id'])) {
     header('Location: index.php');
@@ -23,18 +24,7 @@ if ($profile_check['incomplete']) {
     exit;
 }
 
-$opciones_titulacion = [
-    "Informe técnico de Residencia Profesional",
-    "Informe de Residencia Profesional",
-    "Proyecto de Investigación y/o Desarrollo Tecnológico",
-    "Proyecto Integrador",
-    "Proyecto Productivo",
-    "Proyecto de Innovación Tecnológica",
-    "Proyecto de emprendedurismo",
-    "Proyecto de Educación Dual",
-    "Tesis o tesina",
-    "Otro",
-];
+$opciones_titulacion = OPCIONES_TITULACION;
 ?>
 <!DOCTYPE html>
 <html lang="es">

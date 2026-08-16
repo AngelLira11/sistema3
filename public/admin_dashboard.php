@@ -1,6 +1,7 @@
 <?php
 session_start();
-require_once 'config.php';
+require_once __DIR__ . '/../src/config/config.php';
+require_once __DIR__ . '/../src/config/constants.php';
 
 if (empty($_SESSION['admin_id'])) {
     header('Location: index.php'); exit;
@@ -53,21 +54,8 @@ foreach ($rows as $row) {
 }
 krsort($grupos);
 
-$carreras = [
-    'ING. SISTEMAS COMPUTACIONALES','ING. ELÉCTRICA','ING. ELECTRÓNICA',
-    'ING. INDUSTRIAL','ING. MECÁNICA','ING. MECATRÓNICA','ING. QUÍMICA',
-    'ING. GESTIÓN EMPRESARIAL','ING. EN ENERGÍAS RENOVABLES',
-    'ING. EN SEMICONDUCTORES','LIC. ADMINISTRACIÓN',
-];
-
-$opciones = [
-    'Informe técnico de Residencia Profesional',
-    'Informe de Residencia Profesional',
-    'Proyecto de Investigación y/o Desarrollo Tecnológico',
-    'Proyecto Integrador','Proyecto Productivo',
-    'Proyecto de Innovación Tecnológica','Proyecto de Emprendedurismo',
-    'Proyecto de Educación Dual','Tesis o Tesina','Otro',
-];
+$carreras = CARRERAS;
+$opciones = OPCIONES_TITULACION;
 ?>
 <!DOCTYPE html>
 <html lang="es">
