@@ -63,13 +63,13 @@ $opciones = OPCIONES_TITULACION;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Titulación — ITL</title>
-    <link rel="stylesheet" href="estilos/estilos_admin.css">
+    <link rel="stylesheet" href="assets/css/estilos_admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <header class="admin-header">
         <div class="header-content">
-            <img src="img/logotipo.png" alt="Logo ITL" class="logo-min">
+            <img src="assets/img/logotipo.png" alt="Logo ITL" class="logo-min">
             <h1>Control de Titulación</h1>
             <div class="user-info">
                 <span><i class="fas fa-user-shield"></i> <?= $_SESSION['admin_nombre'] ?? 'Administrador' ?></span>
@@ -80,7 +80,7 @@ $opciones = OPCIONES_TITULACION;
                     </a>
                 <?php endif; ?>
 
-                <a href="logout.php" class="btn-salir">Salir</a>
+                <a href="../src/auth/logout.php" class="btn-salir">Salir</a>
             </div>
         </div>
     </header>
@@ -194,7 +194,7 @@ $opciones = OPCIONES_TITULACION;
         <?php endforeach; ?>
 
         <div class="exportar-section">
-            <a href="exportar_excel.php?<?= http_build_query($_GET) ?>" class="btn-exportar">
+            <a href="../src/admin/exportar_excel.php?<?= http_build_query($_GET) ?>" class="btn-exportar">
                 <i class="fas fa-file-excel"></i> Exportar a Excel
             </a>
         </div>

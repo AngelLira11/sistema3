@@ -49,7 +49,7 @@ function getAlumnoById($pdo, $alumno_id) {
 function redirectIfIncomplete($alumno) {
     $profile = isProfileIncomplete($alumno);
     if ($profile['incomplete']) {
-        header('Location: complete_profile.php');
+        header('Location: ../../public/complete_profile.php');
         exit;
     }
 }

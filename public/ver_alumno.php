@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'config.php';
+require_once __DIR__ . '/../src/config/config.php';
 
 if (empty($_SESSION['admin_id'])) {
     header('Location: index.php'); exit;
@@ -24,7 +24,7 @@ if (!$al) {
 <head>
     <meta charset="UTF-8">
     <title>Expediente: <?= htmlspecialchars($al['nombre']) ?> — ITL</title>
-    <link rel="stylesheet" href="estilos/estilos_admin.css">
+    <link rel="stylesheet" href="assets/css/estilos_admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <!-- Estilos añadidos para centrar y despegar la ficha -->

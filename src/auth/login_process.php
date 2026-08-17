@@ -1,7 +1,10 @@
 <?php
 session_start();
-require_once 'config.php';
-require_once 'profile_check.php';
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/csrf.php';
+require_once __DIR__ . '/profile_check.php';
+
+csrf_validate();
 
 $email_user = trim($_POST['email'] ?? '');
 $password   = trim($_POST['password'] ?? '');
@@ -21,11 +24,11 @@ if ($alumno && password_verify($password, $alumno['password'])) {
     $profile_check = isProfileIncomplete($alumno);
     if ($profile_check['incomplete']) {
         // Redirigir a completar perfil
-        header('Location: complete_profile.php');
+        header('Location: ../../public/complete_profile.php');
         exit;
     }
     
-    header('Location: dashboard.php');
+    header('Location: ../../public/dashboard.php');
     exit;
 }
 
@@ -43,10 +46,10 @@ if ($admin && password_verify($password, $admin['password'])) {
     // LA CLAVE AQUÍ: Guardamos el rol numérico (0 para Admin normal, 1 para SuperAdmin)
     $_SESSION['admin_rol'] = $admin['rol']; 
     
-    header('Location: admin_dashboard.php');
+    header('Location: ../../public/admin_dashboard.php');
     exit;
 }
 
-header('Location: index.php?error=credenciales');
+header('Location: ../../public/index.php?error=credenciales');
 exit;
 ?>

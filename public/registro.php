@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="estilos/estilos_registro.css">
-    <link rel="stylesheet" href="estilos/alertas.css">
+    <link rel="stylesheet" href="assets/css/estilos_registro.css">
+    <link rel="stylesheet" href="assets/css/alertas.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <title>Registro — ITL Titulación</title>
 </head>
@@ -12,6 +12,7 @@
 
 <?php
 session_start();
+require_once __DIR__ . '/../src/auth/csrf.php';
 
 // Si hay un error, resetear el contador (permitir que reintente)
 if (!empty($_GET['error'])) {
@@ -45,7 +46,8 @@ if (!empty($_GET['error'])) {
         <?php endif; ?>
 
         <div id="forms">
-            <form action="registro_process.php" method="POST">
+            <form action="../src/alumnos/registro_process.php" method="POST">
+                <?php csrf_field(); ?>
                 <input type="hidden" name="form_timestamp" value="<?php echo $_SESSION['form_load_time'] ?? time(); ?>">
                 
                 <fieldset>
@@ -78,7 +80,7 @@ if (!empty($_GET['error'])) {
                             <legend class="captcha-legend">Verifica que no eres un robot</legend>
                             
                             <div class="captcha-image-wrapper">
-                                <img id="captcha-image" src="captcha.php?t=<?php echo time(); ?>" 
+                                <img id="captcha-image" src="../src/captcha/captcha.php?t=<?php echo time(); ?>" 
                                      alt="CAPTCHA"
                                      class="captcha-image">
                                 <button type="button" id="reload-captcha" class="captcha-reload" 
@@ -124,11 +126,11 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             
             // Obtener nuevo timestamp para cache-busting
-            fetch('reload_captcha.php')
+            fetch('../src/captcha/reload_captcha.php')
                 .then(response => response.json())
                 .then(data => {
                     // Recargar imagen con nuevo timestamp
-                    captchaImg.src = 'captcha.php?t=' + data.timestamp;
+                    captchaImg.src = '../src/captcha/captcha.php?t=' + data.timestamp;
                     
                     // Limpiar campo de entrada
                     document.getElementById('captcha_input').value = '';
@@ -137,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .catch(error => {
                     console.error('Error recargando CAPTCHA:', error);
                     // Fallback: recargar manualmente
-                    captchaImg.src = 'captcha.php?t=' + new Date().getTime();
+                    captchaImg.src = '../src/captcha/captcha.php?t=' + new Date().getTime();
                     document.getElementById('captcha_input').value = '';
                 });
         });

@@ -1,9 +1,9 @@
 <?php
 session_start();
-require_once 'config.php';
+require_once __DIR__ . '/../config/config.php';
 
 if (empty($_SESSION['admin_id'])) {
-    header('Location: index.php');
+    header('Location: ../../public/index.php');
     exit;
 }
 
@@ -15,7 +15,7 @@ $opcion  = $_GET['opcion_titulacion'] ?? '';
 $anio_f  = $_GET['anio']             ?? '';
 $grad_f  = $_GET['graduacion']        ?? '';
 
-$sql    = "SELECT anio_egreso, graduacion, no_control, nombre, carrera, opcion_titulacion, email, celular, fecha_egreso FROM alumnos WHERE 1=1";
+$sql    = "SELECT anio_egreso, graduacion, no_control, nombre, carrera, opcion_titulacion, email, celular, fecha_egreso FROM alumnos WHERE 1=1 AND nombre != '' AND carrera != '' AND opcion_titulacion != '' AND celular != ''";
 $params = [];
 
 if (!empty($buscar)) {

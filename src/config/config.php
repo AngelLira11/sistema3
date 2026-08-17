@@ -22,7 +22,10 @@ function env(string $key, $default = null) {
 $envType = strtoupper(env('DB_ENVIRONMENT', 'LOCAL'));
 $suffix  = ($envType === 'REMOTE') ? '_REMOTE' : '_LOCAL';
 
-// 4. Definición de constantes para la Base de Datos
+// 4. Constante de entorno de la aplicación
+define('APP_ENV', $envType);
+
+// 5. Definición de constantes para la Base de Datos
 define('DB_HOST', env('DB_HOST' . $suffix, 'localhost'));
 define('DB_USER', env('DB_USER' . $suffix, 'root'));
 define('DB_PASS', env('DB_PASS' . $suffix, ''));

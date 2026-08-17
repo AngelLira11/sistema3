@@ -1,11 +1,14 @@
 <?php
 session_start();
-require_once 'config.php';
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../auth/csrf.php';
 
 if (empty($_SESSION['alumno_id']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: index.php');
+    header('Location: ../../public/index.php');
     exit;
 }
+
+csrf_validate();
 
 $id                = $_SESSION['alumno_id'];
 $nombre            = trim($_POST['nombre'] ?? '');
@@ -21,20 +24,20 @@ $password2         = $_POST['password2'] ?? '';
 // Validar campos obligatorios (email NO se valida, no es editable)
 if (empty($nombre) || empty($no_control) || empty($carrera) || empty($opcion_titulacion)
     || empty($celular) || empty($fecha_egreso) || empty($graduacion)) {
-    header('Location: editar_datos.php?error=campos');
+    header('Location: ../../public/editar_datos.php?error=campos');
     exit;
 }
 
 // Validar graduacion
 if (!in_array($graduacion, ['1', '2'])) {
-    header('Location: editar_datos.php?error=campos');
+    header('Location: ../../public/editar_datos.php?error=campos');
     exit;
 }
 
 // Validar contraseña solo si se quiere cambiar
 if (!empty($password)) {
     if ($password !== $password2) {
-        header('Location: editar_datos.php?error=password');
+        header('Location: ../../public/editar_datos.php?error=password');
         exit;
     }
 }
@@ -52,7 +55,7 @@ try {
     ");
     $check->execute([$no_control, $id]);
     if ($check->fetch()) {
-        header('Location: editar_datos.php?error=duplicado');
+        header('Location: ../../public/editar_datos.php?error=duplicado');
         exit;
     }
 
@@ -78,7 +81,7 @@ try {
                         $celular, $fecha_egreso, $graduacion, $anio_egreso, $id]);
     }
 
-    header('Location: dashboard.php?ok=1');
+    header('Location: ../../public/dashboard.php?ok=1');
     exit;
 
 } catch (Exception $e) {

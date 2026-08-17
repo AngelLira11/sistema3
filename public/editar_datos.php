@@ -2,7 +2,8 @@
 session_start();
 require_once __DIR__ . '/../src/config/config.php';
 require_once __DIR__ . '/../src/config/constants.php';
-require_once 'profile_check.php';
+require_once __DIR__ . '/../src/auth/profile_check.php';
+require_once __DIR__ . '/../src/auth/csrf.php';
 
 if (empty($_SESSION['alumno_id'])) {
     header('Location: index.php');
@@ -26,8 +27,8 @@ $opciones = OPCIONES_TITULACION;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="estilos/estilos_registro.css">
-    <link rel="stylesheet" href="estilos/alertas.css">
+    <link rel="stylesheet" href="assets/css/estilos_registro.css">
+    <link rel="stylesheet" href="assets/css/alertas.css">
     <title>Editar datos — ITL Titulación</title>
 </head>
 <body>
@@ -51,7 +52,8 @@ $opciones = OPCIONES_TITULACION;
         <?php endif; ?>
 
         <div id="forms">
-            <form action="editar_process.php" method="POST">
+            <form action="../src/alumnos/editar_process.php" method="POST">
+                <?php csrf_field(); ?>
                 <fieldset>
                     <div class="campo">
                         <label for="nombre">Nombre completo:</label>

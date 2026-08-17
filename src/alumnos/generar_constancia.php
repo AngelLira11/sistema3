@@ -2,10 +2,10 @@
 session_start();
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/constants.php';
-require_once __DIR__ . '/../config/profile_check.php';
+require_once __DIR__ . '/../auth/profile_check.php';
 
 if (empty($_SESSION['alumno_id'])) {
-    header('Location: index.php');
+    header('Location: ../../public/index.php');
     exit;
 }
 
@@ -13,14 +13,14 @@ $pdo  = getConexion();
 $alumno = getAlumnoById($pdo, $_SESSION['alumno_id']);
 
 if (!$alumno) {
-    header('Location: index.php');
+    header('Location: ../../public/index.php');
     exit;
 }
 
 // Verificar que el perfil esté completo
 $profile_check = isProfileIncomplete($alumno);
 if ($profile_check['incomplete']) {
-    header('Location: complete_profile.php');
+    header('Location: ../../public/complete_profile.php');
     exit;
 }
 

@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="estilos/estilos_dashboard.css">
-    <link rel="stylesheet" href="estilos/alertas.css">
+    <link rel="stylesheet" href="assets/css/estilos_dashboard.css">
+    <link rel="stylesheet" href="assets/css/alertas.css">
     <title>Mi Trámite — ITL</title>
 </head>
 <body>
 
 <?php
 session_start();
-require_once 'config.php';
-require_once 'profile_check.php';
+require_once __DIR__ . '/../src/config/config.php';
+require_once __DIR__ . '/../src/auth/profile_check.php';
 
 if (empty($_SESSION['alumno_id'])) {
     header('Location: index.php');
@@ -38,7 +38,7 @@ redirectIfIncomplete($alumno);
         <h2>Sistema de Titulación</h2>
         <p>Instituto Tecnológico de La Laguna</p>
     </div>
-    <a href="logout.php" class="btn-logout">Cerrar sesión</a>
+    <a href="../src/auth/logout.php" class="btn-logout">Cerrar sesión</a>
 </div>
 
 <div class="contenedor">
@@ -102,7 +102,7 @@ redirectIfIncomplete($alumno);
         <a href="editar_datos.php" class="btn-editar">
             ✏️ Editar mis datos
         </a>
-        <a href="generar_constancia.php" class="btn-pdf" target="_blank">
+        <a href="../src/alumnos/generar_constancia.php" class="btn-pdf" target="_blank">
             🖨️ Generar Constancia de No Inconveniencia
         </a>
         <p class="nota">El documento se abre directo en el navegador listo para imprimir o guardar como PDF.</p>

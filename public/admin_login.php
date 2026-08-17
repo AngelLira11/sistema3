@@ -3,8 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Acceso Administrativo — ITL</title>
-    <link rel="stylesheet" href="estilos/estilos_registro.css"> </head>
+    <link rel="stylesheet" href="assets/css/estilos_registro.css"> </head>
 <body>
+<?php
+session_start();
+require_once __DIR__ . '/../src/auth/csrf.php';
+?>
 <div id="padre">
     <div id="hijo">
         <h1>Admin — Titulación</h1>
@@ -13,7 +17,8 @@
             <p style="color:red;">Usuario o contraseña incorrectos.</p>
         <?php endif; ?>
 
-        <form action="admin_login_process.php" method="POST">
+        <form action="../src/auth/admin_login_process.php" method="POST">
+            <?php csrf_field(); ?>
             <div class="campo">
                 <label>Usuario:</label>
                 <input type="text" name="usuario" required placeholder="Ej. jose_admin">

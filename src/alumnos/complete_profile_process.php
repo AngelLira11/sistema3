@@ -1,13 +1,16 @@
 <?php
 session_start();
-require_once 'config.php';
-require_once 'profile_check.php';
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../auth/profile_check.php';
+require_once __DIR__ . '/../auth/csrf.php';
 
 // Verificar que el usuario esté autenticado
 if (empty($_SESSION['alumno_id']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: index.php');
+    header('Location: ../../public/index.php');
     exit;
 }
+
+csrf_validate();
 
 $id                = $_SESSION['alumno_id'];
 $nombre            = trim($_POST['nombre'] ?? '');
@@ -21,26 +24,26 @@ $graduacion        = trim($_POST['graduacion'] ?? '');
 // Validar campos obligatorios (email NO se valida aquí, ya existe del registro)
 if (empty($nombre) || empty($no_control) || empty($carrera) || empty($opcion_titulacion)
     || empty($celular) || empty($fecha_egreso) || empty($graduacion)) {
-    header('Location: complete_profile.php?error=campos');
+    header('Location: ../../public/complete_profile.php?error=campos');
     exit;
 }
 
 // Validar teléfono
 if (!preg_match('/^[0-9]{10,15}$/', $celular)) {
-    header('Location: complete_profile.php?error=formato');
+    header('Location: ../../public/complete_profile.php?error=formato');
     exit;
 }
 
 // Validar graduacion
 if (!in_array($graduacion, ['1', '2'])) {
-    header('Location: complete_profile.php?error=formato');
+    header('Location: ../../public/complete_profile.php?error=formato');
     exit;
 }
 
 // Validar y procesar fecha
 $anio_egreso = (int)date('Y', strtotime($fecha_egreso));
 if ($anio_egreso < 2020 || $anio_egreso > 2099) {
-    header('Location: complete_profile.php?error=formato');
+    header('Location: ../../public/complete_profile.php?error=formato');
     exit;
 }
 
@@ -51,7 +54,7 @@ try {
     $current_alumno = getAlumnoById($pdo, $id);
     if (!$current_alumno) {
         session_destroy();
-        header('Location: index.php');
+        header('Location: ../../public/index.php');
         exit;
     }
 
@@ -63,7 +66,7 @@ try {
     ");
     $check->execute([$no_control, $id]);
     if ($check->fetch()) {
-        header('Location: complete_profile.php?error=duplicado');
+        header('Location: ../../public/complete_profile.php?error=duplicado');
         exit;
     }
 
@@ -85,12 +88,12 @@ try {
 
     if ($profile_check['incomplete']) {
         // El perfil sigue siendo incompleto (esto no debería suceder si validamos bien)
-        header('Location: complete_profile.php?error=campos');
+        header('Location: ../../public/complete_profile.php?error=campos');
         exit;
     }
 
     // Redirigir al dashboard
-    header('Location: dashboard.php?profile_completed=1');
+    header('Location: ../../public/dashboard.php?profile_completed=1');
     exit;
 
 } catch (Exception $e) {

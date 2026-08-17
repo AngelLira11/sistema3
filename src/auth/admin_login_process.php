@@ -1,17 +1,20 @@
 <?php
 session_start();
-require_once 'config.php';
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/csrf.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: admin_login.php');
+    header('Location: ../../public/admin_login.php');
     exit;
 }
+
+csrf_validate();
 
 $usuario_input = trim($_POST['usuario'] ?? '');
 $password_input = trim($_POST['password'] ?? '');
 
 if (empty($usuario_input) || empty($password_input)) {
-    header('Location: admin_login.php?error=vacio');
+    header('Location: ../../public/admin_login.php?error=vacio');
     exit;
 }
 
@@ -30,16 +33,16 @@ try {
         $_SESSION['admin_nombre'] = $admin['nombre'];
         $_SESSION['es_admin'] = true;
 
-        header('Location: admin_dashboard.php');
+        header('Location: ../../public/admin_dashboard.php');
         exit;
     } else {
         // Credenciales incorrectas
-        header('Location: admin_login.php?error=auth');
+        header('Location: ../../public/admin_login.php?error=auth');
         exit;
     }
 
 } catch (Exception $e) {
     // Error de sistema
-    header('Location: admin_login.php?error=sistema');
+    header('Location: ../../public/admin_login.php?error=sistema');
     exit;
 }

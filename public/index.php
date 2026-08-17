@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="estilos/estilos.css">
-    <link rel="stylesheet" href="estilos/alertas.css">
+    <link rel="stylesheet" href="assets/css/estilos.css">
+    <link rel="stylesheet" href="assets/css/alertas.css">
     <title>Login — ITL Titulación</title>
 </head>
 <body>
@@ -13,8 +13,13 @@
     <div id="hijo">
 
         <div id="logo">
-            <img src="img/logotipo.png" id="log" alt="Logo ITL">
+            <img src="assets/img/logotipo.png" id="log" alt="Logo ITL">
         </div>
+
+        <?php
+        session_start();
+        require_once __DIR__ . '/../src/auth/csrf.php';
+        ?>
 
         <?php if (!empty($_GET['error'])): ?>
             <div class="alerta alerta-error">
@@ -35,7 +40,8 @@
         <?php endif; ?>
 
         <div id="forms">
-            <form action="login_process.php" method="POST">
+            <form action="../src/auth/login_process.php" method="POST">
+                <?php csrf_field(); ?>
                 <fieldset>
                     <legend>Iniciar Sesión</legend>
 

@@ -1,6 +1,7 @@
 <?php
 session_start();
-require_once 'config.php';
+require_once __DIR__ . '/../src/config/config.php';
+require_once __DIR__ . '/../src/auth/csrf.php';
 
 // PROTECCIÓN: Si no ha iniciado sesión o NO es SuperAdmin (rol != 1), lo saca de aquí
 if (empty($_SESSION['admin_id']) || $_SESSION['admin_rol'] != 1) {
@@ -13,6 +14,7 @@ $mensaje = "";
 
 // 1. LÓGICA PARA DAR DE ALTA UN NUEVO ADMIN
 if (isset($_POST['registrar_admin'])) {
+    csrf_validate();
     $nuevo_usuario   = trim($_POST['usuario']);
     $password_plana  = trim($_POST['password']);
     $nombre_real     = trim($_POST['nombre']);
@@ -35,6 +37,7 @@ if (isset($_POST['registrar_admin'])) {
 
 // 2. LÓGICA PARA CAMBIAR CONTRASEÑA DE UN ADMIN
 if (isset($_POST['cambiar_password'])) {
+    csrf_validate();
     $admin_id       = $_POST['id_admin'];
     $nueva_pass_txt = trim($_POST['nueva_password']);
 
@@ -63,7 +66,7 @@ $admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Administradores — ITL</title>
-    <link rel="stylesheet" href="estilos/estilos_admin.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/estilos_admin.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
         /* --- REESTRUCTURACIÓN DEL HEADER PARA EVITAR AMONTONAMIENTO --- */
@@ -255,7 +258,7 @@ $admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <a href="admin_dashboard.php" class="btn-volver">
                     <i class="fas fa-arrow-left"></i> Volver al Panel
                 </a>
-                <a href="logout.php" class="btn-salir">Salir</a>
+                <a href="../src/auth/logout.php" class="btn-salir">Salir</a>
             </div>
         </div>
     </header>
@@ -285,6 +288,7 @@ $admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <td><strong><?= htmlspecialchars($ad['usuario']) ?></strong></td>
                                 <td>
                                     <form method="POST" class="inline-form">
+                                        <?php csrf_field(); ?>
                                         <input type="hidden" name="id_admin" value="<?= $ad['id'] ?>">
                                         <input type="password" name="nueva_password" placeholder="Nueva clave..." required autocomplete="new-password">
                                         <button type="submit" name="cambiar_password" class="btn-key" title="Actualizar contraseña">
@@ -302,6 +306,7 @@ $admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <section class="panel-card">
                 <h2><i class="fas fa-user-plus"></i> Registrar Nuevo Administrador</h2>
                 <form method="POST">
+                    <?php csrf_field(); ?>
                     <div class="form-group">
                         <label>Nombre Completo (Área / Persona):</label>
                         <input type="text" name="nombre" required placeholder="Ej: TecLaguna o Nombre Personal">

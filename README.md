@@ -1,109 +1,143 @@
-# Sistema de Titulación
+# Proyecto Titulación
 
-## Cómo eliges local o producción
+Sistema de gestión de titulación desarrollado en PHP con soporte para conexión a base de datos local (MySQL/XAMPP) o remota (TiDB Cloud).
 
-La app decide la base de datos con esta variable:
+## Requisitos previos
 
-```bash
-APP_ENV=local
-```
+- PHP 8.0 o superior
+- [Composer](https://getcomposer.org/download/) instalado y accesible desde la terminal
+- XAMPP (si se desea correr en entorno local) o un servidor PHP con MySQL
+- Extensiones de PHP habilitadas: `gd` y `fileinfo` (ver instrucciones abajo)
 
-o
-
-```bash
-APP_ENV=production
-```
-
-- `APP_ENV=local` = usa [.env.local](.env.local) y la base local
-- `APP_ENV=production` = usa [.env](.env) y la base remota
-
-## 1) Local
-
-Esto significa que la app corre en tu computadora y usa la base de datos local.
-
-1. Crea una base llamada `titulacion` en MySQL.
-2. Deja [.env.local](.env.local) así:
-
-```env
-APP_ENV=local
-DB_HOST=localhost
-DB_USER=root
-DB_PASS=
-DB_NAME=titulacion
-DB_PORT=3306
-DB_CHARSET=utf8mb4
-```
-
-3. Ejecuta:
+## 1. Clonar / obtener el proyecto
 
 ```bash
-set APP_ENV=local
-php -S localhost:8000 -t public
+git clone <url-del-repositorio>
+cd <carpeta-del-proyecto>
 ```
 
-4. Abre:
+## 2. Instalar dependencias con Composer
 
-```text
-http://localhost:8000
-```
-
-## 2) Producción (pero en tu localhost)
-
-Aquí no significa que cambie la URL. Significa que la app sigue corriendo en tu máquina, pero conectándose a la base remota de producción.
-
-1. En [.env](.env) pon la base remota real:
-
-```env
-APP_ENV=production
-DB_HOST=gateway01.us-east-1.prod.aws.tidbcloud.com
-DB_USER=3uSsvXzWqJayFsh.root
-DB_PASS=mSxyPOXt5uE2dswB
-DB_NAME=titulacion_db
-DB_PORT=4000
-DB_CHARSET=utf8mb4
-```
-
-2. Ejecuta:
+Desde la raíz del proyecto:
 
 ```bash
-set APP_ENV=production
-php -S localhost:8000 -t public
+composer install
 ```
 
-3. Abre:
+Si no tienes Composer instalado, descárgalo desde https://getcomposer.org/download/ e instálalo siguiendo las instrucciones para tu sistema operativo. Verifica que quedó disponible en la terminal con:
 
-```text
-http://localhost:8000
+```bash
+composer --version
 ```
 
-Aunque la URL sea `localhost`, la base que usa será la remota.
+## 3. Habilitar las extensiones `gd` y `fileinfo` en `php.ini`
 
-## 3) XAMPP / WAMP / CAMP
+### Si usas XAMPP
 
-En XAMPP lo mismo:
+1. Abre el panel de control de XAMPP.
+2. Haz clic en **Config** (junto a Apache) → **PHP (php.ini)**. Esto abrirá el archivo `php.ini` que XAMPP está usando (normalmente en `C:\xampp\php\php.ini`).
+3. Busca las siguientes líneas (usa Ctrl+F):
 
-- local = usa [.env.local](.env.local) con `localhost`
-- producción = usa [.env](.env) con la base remota, pero igual abres la app en localhost
+   ```ini
+   ;extension=gd
+   ;extension=fileinfo
+   ```
 
-Paso a paso:
+4. Quita el punto y coma (`;`) al inicio de cada línea para que quede así:
 
-1. Pega la carpeta del proyecto en `htdocs`.
-2. Si es local, usa la base local en [.env.local](.env.local).
-3. Si es producción local, usa [.env](.env) con la base remota.
-4. Abre la app en:
+   ```ini
+   extension=gd
+   extension=fileinfo
+   ```
 
-```text
-http://localhost/nombre-del-proyecto/public
+5. Guarda el archivo.
+6. Reinicia Apache desde el panel de XAMPP (botón **Stop** y luego **Start** junto a Apache) para que los cambios surtan efecto.
+
+### Si usas PHP por línea de comandos (sin XAMPP)
+
+1. Ubica tu archivo `php.ini` activo con:
+
+   ```bash
+   php --ini
+   ```
+
+2. Ábrelo con tu editor de texto y realiza el mismo cambio: descomenta (quita el `;`) de las líneas `extension=gd` y `extension=fileinfo`.
+3. Guarda el archivo y verifica que las extensiones quedaron activas:
+
+   ```bash
+   php -m | grep -i gd
+   php -m | grep -i fileinfo
+   ```
+
+   Ambos comandos deben mostrar el nombre de la extensión en la salida.
+
+## 4. Configurar el archivo `.env`
+
+Copia el archivo de ejemplo y ajusta los valores según tu entorno:
+
+```bash
+cp .env.example .env
 ```
 
-La clave es esta:
+El `.env` define si el proyecto usará la base de datos **local** o **remota** mediante la variable `DB_ENVIRONMENT`:
 
-- la URL puede seguir siendo localhost
-- lo que cambia es la conexión a la base de datos
+```dotenv
+# Cambia a 'LOCAL' o 'REMOTE' según la BD que quieras usar
+DB_ENVIRONMENT="LOCAL"
 
-## 4) Importante
+# Configuración Base de Datos Local
+DB_HOST_LOCAL="localhost"
+DB_NAME_LOCAL="titulacion"
+DB_USER_LOCAL="root"
+DB_PASS_LOCAL=""
+DB_PORT_LOCAL="3306"
 
-- local = localhost + base local
-- producción = localhost + base remota
-- no subas `.env` ni `.env.local` con secretos reales
-- si cambias de base, reinicia el servidor
+# Configuración Base de Datos Remota
+DB_HOST_REMOTE="<host-remoto>"
+DB_NAME_REMOTE="<nombre-bd-remota>"
+DB_USER_REMOTE="<usuario-remoto>"
+DB_PASS_REMOTE="<password-remoto>"
+DB_PORT_REMOTE="4000"
+```
+
+> ⚠️ **Importante:** el archivo `.env` contiene credenciales sensibles (usuario y contraseña de la base de datos remota). No lo subas a repositorios públicos ni lo compartas. Asegúrate de que esté incluido en `.gitignore`. Si estas credenciales ya se compartieron o se filtraron, se recomienda rotarlas (cambiar la contraseña) desde el panel de tu proveedor de base de datos.
+
+## 5. Preparar la base de datos local (si usas `DB_ENVIRONMENT="LOCAL"`)
+
+1. Inicia **Apache** y **MySQL** desde el panel de XAMPP.
+2. Abre phpMyAdmin en `http://localhost/phpmyadmin`.
+3. Crea una base de datos llamada `titulacion` (o el nombre definido en `DB_NAME_LOCAL`).
+4. Importa el archivo `.sql` del proyecto (si se incluye uno) desde la pestaña **Importar**.
+
+## 6. Ejecutar el proyecto
+
+### Opción A: Con el servidor embebido de PHP (línea de comandos)
+
+Desde la raíz del proyecto:
+
+```bash
+php -S localhost:8000
+```
+
+Luego abre tu navegador en `http://localhost:8000`.
+
+### Opción B: Con XAMPP
+
+1. Copia (o mueve) la carpeta del proyecto dentro de `C:\xampp\htdocs\` (Windows) o `/Applications/XAMPP/htdocs/` (Mac).
+2. Inicia **Apache** y **MySQL** desde el panel de XAMPP.
+3. Abre tu navegador en `http://localhost/<nombre-de-la-carpeta-del-proyecto>`.
+
+## 7. Verificación rápida
+
+- Confirma que Composer instaló las dependencias: debe existir la carpeta `vendor/`.
+- Confirma que `gd` y `fileinfo` están activas con `php -m`.
+- Verifica que la conexión a la base de datos funciona cambiando `DB_ENVIRONMENT` entre `"LOCAL"` y `"REMOTE"` y probando el acceso a la aplicación en cada caso.
+
+## Solución de problemas comunes
+
+| Problema | Posible causa | Solución |
+|---|---|---|
+| `Class "GdImage" not found` o errores de imágenes | Extensión `gd` no habilitada | Revisar el paso 3 y reiniciar Apache/terminal |
+| `finfo_open(): Failed to load` o errores al subir archivos | Extensión `fileinfo` no habilitada | Revisar el paso 3 y reiniciar Apache/terminal |
+| `composer: command not found` | Composer no instalado o no está en el PATH | Reinstalar Composer y agregarlo al PATH del sistema |
+| No conecta a la base de datos remota | Firewall, credenciales incorrectas o IP no permitida en TiDB Cloud | Verificar las credenciales en `.env` y que tu IP esté en la whitelist del proveedor |

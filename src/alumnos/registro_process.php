@@ -1,12 +1,17 @@
 <?php
 session_start();
-require_once 'config.php';
-require_once 'securimage/securimage.php';
+require_once dirname(__DIR__) . '/config/config.php';
+require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
+require_once dirname(__DIR__) . '/auth/csrf.php';
+
+use Gregwar\Captcha\PhraseBuilder;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: registro.php');
+    header('Location: ../../public/registro.php');
     exit;
 }
+
+csrf_validate();
 
 /**
  * Rate Limiting Helper Functions
@@ -16,6 +21,7 @@ function getRateLimitFile($ip) {
 }
 
 function checkRateLimit($ip) {
+    if (APP_ENV === 'LOCAL') return true;
     $file = getRateLimitFile($ip);
     $now = time();
     $window = 900; // 15 minutos
@@ -41,6 +47,7 @@ function checkRateLimit($ip) {
 }
 
 function recordFailedAttempt($ip) {
+    if (APP_ENV === 'LOCAL') return;
     $file = getRateLimitFile($ip);
     $now = time();
     $window = 900; // 15 minutos
@@ -61,6 +68,7 @@ function recordFailedAttempt($ip) {
 }
 
 function clearRateLimit($ip) {
+    if (APP_ENV === 'LOCAL') return;
     $file = getRateLimitFile($ip);
     if (file_exists($file)) {
         unlink($file);
@@ -72,7 +80,7 @@ $client_ip = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['HTTP_CLIENT_IP'] ?? $
 
 // Verificar rate limit
 if (!checkRateLimit($client_ip)) {
-    header('Location: registro.php?error=bloqueado');
+    header('Location: ../../public/registro.php?error=bloqueado');
     exit;
 }
 
@@ -86,7 +94,7 @@ $form_timestamp = (int)($_POST['form_timestamp'] ?? 0);
 // Validar que el formulario fue cargado
 if (empty($form_timestamp)) {
     recordFailedAttempt($client_ip);
-    header('Location: registro.php?error=campos&email=' . urlencode($email));
+    header('Location: ../../public/registro.php?error=campos&email=' . urlencode($email));
     exit;
 }
 
@@ -94,37 +102,47 @@ if (empty($form_timestamp)) {
 $time_elapsed = time() - $form_timestamp;
 if ($time_elapsed < 5) {
     recordFailedAttempt($client_ip);
-    header('Location: registro.php?error=demasiado_rapido&email=' . urlencode($email));
+    header('Location: ../../public/registro.php?error=demasiado_rapido&email=' . urlencode($email));
     exit;
 }
 
 // Validar campos requeridos
 if (empty($email) || empty($password) || empty($password2) || empty($captcha)) {
     recordFailedAttempt($client_ip);
-    header('Location: registro.php?error=campos&email=' . urlencode($email));
+    header('Location: ../../public/registro.php?error=campos&email=' . urlencode($email));
     exit;
 }
 
 // Validar formato de email
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     recordFailedAttempt($client_ip);
-    header('Location: registro.php?error=campos&email=' . urlencode($email));
+    header('Location: ../../public/registro.php?error=campos&email=' . urlencode($email));
     exit;
 }
 
 // Validar contraseñas iguales
 if ($password !== $password2) {
     recordFailedAttempt($client_ip);
-    header('Location: registro.php?error=password&email=' . urlencode($email));
+    header('Location: ../../public/registro.php?error=password&email=' . urlencode($email));
     exit;
 }
 
 // Validar CAPTCHA
-if (!Securimage::check($captcha)) {
+$captcha_user    = trim($_POST['captcha'] ?? $captcha ?? '');
+$captcha_session = $_SESSION['captcha_phrase'] ?? '';
+
+// strcasecmp devuelve 0 cuando las dos cadenas coinciden (sin importar mayúsculas/minúsculas)
+if (empty($captcha_user) || empty($captcha_session) || strcasecmp($captcha_session, $captcha_user) !== 0) {
+    // Limpiar el CAPTCHA para evitar reutilización
+    unset($_SESSION['captcha_phrase']);
+    
     recordFailedAttempt($client_ip);
-    header('Location: registro.php?error=captcha&email=' . urlencode($email));
+    header('Location: ../../public/registro.php?error=captcha&email=' . urlencode($email));
     exit;
 }
+
+// Limpiar la sesión si el CAPTCHA fue correcto
+unset($_SESSION['captcha_phrase']);
 
 try {
     $pdo = getConexion();
@@ -134,7 +152,7 @@ try {
     $check->execute([$email]);
     if ($check->fetch()) {
         recordFailedAttempt($client_ip);
-        header('Location: registro.php?error=duplicado&email=' . urlencode($email));
+        header('Location: ../../public/registro.php?error=duplicado&email=' . urlencode($email));
         exit;
     }
 
@@ -184,7 +202,7 @@ try {
     unset($_SESSION['form_load_time']);
 
     // Redirigir a completar perfil
-    header('Location: complete_profile.php');
+    header('Location: ../../public/complete_profile.php');
     exit;
 
 } catch (Exception $e) {
