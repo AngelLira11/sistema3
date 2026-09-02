@@ -1,10 +1,7 @@
 <?php
 session_start();
 require_once dirname(__DIR__) . '/config/config.php';
-require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 require_once dirname(__DIR__) . '/auth/csrf.php';
-
-use Gregwar\Captcha\PhraseBuilder;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: ../../public/registro.php');

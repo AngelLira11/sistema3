@@ -33,7 +33,7 @@ redirectIfIncomplete($alumno);
 ?>
 
 <div class="header">
-    <img src="img/logotipo.png" alt="Logo ITL" class="logo-header">
+    <img src="assets/img/logotipo.png" alt="Logo ITL" class="logo-header">
     <div class="header-titulo">
         <h2>Sistema de Titulación</h2>
         <p>Instituto Tecnológico de La Laguna</p>

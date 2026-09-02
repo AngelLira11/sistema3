@@ -5,9 +5,8 @@ Sistema de gestión de titulación desarrollado en PHP con soporte para conexió
 ## Requisitos previos
 
 - PHP 8.0 o superior
-- [Composer](https://getcomposer.org/download/) instalado y accesible desde la terminal
 - XAMPP (si se desea correr en entorno local) o un servidor PHP con MySQL
-- Extensiones de PHP habilitadas: `gd` y `fileinfo` (ver instrucciones abajo)
+- Extensiones PHP disponibles: sesiones, `openssl` y `pdo_mysql` si se conecta directamente a TiDB Cloud
 
 ## 1. Clonar / obtener el proyecto
 
@@ -16,21 +15,11 @@ git clone <url-del-repositorio>
 cd <carpeta-del-proyecto>
 ```
 
-## 2. Instalar dependencias con Composer
+## 2. Extensiones PHP
 
-Desde la raíz del proyecto:
+El CAPTCHA se genera como SVG y el archivo `.env` se lee con funciones nativas de PHP, por lo que no se necesitan Composer, `vendor/`, `gd`, `fileinfo` ni `mbstring`.
 
-```bash
-composer install
-```
-
-Si no tienes Composer instalado, descárgalo desde https://getcomposer.org/download/ e instálalo siguiendo las instrucciones para tu sistema operativo. Verifica que quedó disponible en la terminal con:
-
-```bash
-composer --version
-```
-
-## 3. Habilitar las extensiones `gd` y `fileinfo` en `php.ini`
+Si se mantiene la conexión directa con TiDB Cloud, PHP debe tener `pdo_mysql`, `openssl` y sesiones activas. Si se usa TiDB Cloud Data Service, puede omitirse `pdo_mysql`.
 
 ### Si usas XAMPP
 
@@ -71,7 +60,7 @@ composer --version
 
    Ambos comandos deben mostrar el nombre de la extensión en la salida.
 
-## 4. Configurar el archivo `.env`
+## 3. Configurar el archivo `.env`
 
 Copia el archivo de ejemplo y ajusta los valores según tu entorno:
 
@@ -102,14 +91,14 @@ DB_PORT_REMOTE="4000"
 
 > ⚠️ **Importante:** el archivo `.env` contiene credenciales sensibles (usuario y contraseña de la base de datos remota). No lo subas a repositorios públicos ni lo compartas. Asegúrate de que esté incluido en `.gitignore`. Si estas credenciales ya se compartieron o se filtraron, se recomienda rotarlas (cambiar la contraseña) desde el panel de tu proveedor de base de datos.
 
-## 5. Preparar la base de datos local (si usas `DB_ENVIRONMENT="LOCAL"`)
+## 4. Preparar la base de datos local (si usas `DB_ENVIRONMENT="LOCAL"`)
 
 1. Inicia **Apache** y **MySQL** desde el panel de XAMPP.
 2. Abre phpMyAdmin en `http://localhost/phpmyadmin`.
 3. Crea una base de datos llamada `titulacion` (o el nombre definido en `DB_NAME_LOCAL`).
 4. Importa el archivo `.sql` del proyecto (si se incluye uno) desde la pestaña **Importar**.
 
-## 6. Ejecutar el proyecto
+## 5. Ejecutar el proyecto
 
 ### Opción A: Con el servidor embebido de PHP (línea de comandos)
 
@@ -127,17 +116,13 @@ Luego abre tu navegador en `http://localhost:8000`.
 2. Inicia **Apache** y **MySQL** desde el panel de XAMPP.
 3. Abre tu navegador en `http://localhost/<nombre-de-la-carpeta-del-proyecto>`.
 
-## 7. Verificación rápida
+## 6. Verificación rápida
 
-- Confirma que Composer instaló las dependencias: debe existir la carpeta `vendor/`.
-- Confirma que `gd` y `fileinfo` están activas con `php -m`.
+- Confirma que `openssl` y sesiones estén activas; `pdo_mysql` solo es necesaria para conexión MySQL directa.
 - Verifica que la conexión a la base de datos funciona cambiando `DB_ENVIRONMENT` entre `"LOCAL"` y `"REMOTE"` y probando el acceso a la aplicación en cada caso.
 
 ## Solución de problemas comunes
 
 | Problema | Posible causa | Solución |
 |---|---|---|
-| `Class "GdImage" not found` o errores de imágenes | Extensión `gd` no habilitada | Revisar el paso 3 y reiniciar Apache/terminal |
-| `finfo_open(): Failed to load` o errores al subir archivos | Extensión `fileinfo` no habilitada | Revisar el paso 3 y reiniciar Apache/terminal |
-| `composer: command not found` | Composer no instalado o no está en el PATH | Reinstalar Composer y agregarlo al PATH del sistema |
 | No conecta a la base de datos remota | Firewall, credenciales incorrectas o IP no permitida en TiDB Cloud | Verificar las credenciales en `.env` y que tu IP esté en la whitelist del proveedor |

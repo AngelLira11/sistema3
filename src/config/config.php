@@ -1,15 +1,17 @@
 <?php
 
-require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
-
-use Dotenv\Dotenv;
-
 $projectRoot = dirname(__DIR__, 2);
 
-// 1. Cargar las variables del archivo .env con phpdotenv
+// Cargar .env con las funciones incluidas en PHP; no requiere Composer.
 if (is_file($projectRoot . '/.env')) {
-    $dotenv = Dotenv::createImmutable($projectRoot);
-    $dotenv->load();
+    $environment = parse_ini_file($projectRoot . '/.env', false, INI_SCANNER_RAW);
+    if (is_array($environment)) {
+        foreach ($environment as $key => $value) {
+            if (!isset($_ENV[$key]) && !isset($_SERVER[$key])) {
+                $_ENV[$key] = $value;
+            }
+        }
+    }
 }
 
 // 2. Helper para obtener variables de entorno con valor por defecto
@@ -48,7 +50,7 @@ function getConexion(): PDO {
         // Habilitar SSL obligatoriamente para entornos remotos (como TiDB Cloud)
         if (DB_HOST !== 'localhost' && DB_HOST !== '127.0.0.1') {
             $opciones[PDO::MYSQL_ATTR_SSL_CA] = DB_SSL_CA;
-            $opciones[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
+            $opciones[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = true;
         }
 
         try {
