@@ -4,8 +4,8 @@ require_once __DIR__ . '/../src/config/config.php';
 require_once __DIR__ . '/../src/auth/csrf.php';
 
 // PROTECCIÓN: Si no ha iniciado sesión o NO es SuperAdmin (rol != 1), lo saca de aquí
-if (empty($_SESSION['admin_id']) || $_SESSION['admin_rol'] != 1) {
-    header('Location: index.php'); 
+if (empty($_SESSION['admin_id']) || ($_SESSION['admin_rol'] ?? 0) != 1) {
+    header('Location: admin_dashboard.php');
     exit;
 }
 
@@ -15,22 +15,27 @@ $mensaje = "";
 // 1. LÓGICA PARA DAR DE ALTA UN NUEVO ADMIN
 if (isset($_POST['registrar_admin'])) {
     csrf_validate();
-    $nuevo_usuario   = trim($_POST['usuario']);
-    $password_plana  = trim($_POST['password']);
-    $nombre_real     = trim($_POST['nombre']);
+    $nuevo_usuario   = trim($_POST['usuario'] ?? '');
+    $password_plana  = trim($_POST['password'] ?? '');
+    $nombre_real     = trim($_POST['nombre'] ?? '');
 
-    if (!empty($nuevo_usuario) && !empty($password_plana) && !empty($nombre_real)) {
-        // Encriptamos la contraseña
-        $password_encriptada = password_hash($password_plana, PASSWORD_BCRYPT);
-        
-        // Se inserta con rol 0 (Admin normal)
-        $sql = "INSERT INTO administradores (usuario, password, nombre, rol) VALUES (?, ?, ?, 0)";
-        $stmt = $pdo->prepare($sql);
-        
-        if ($stmt->execute([$nuevo_usuario, $password_encriptada, $nombre_real])) {
-            $mensaje = "<div class='alert success'>¡Administrador '$nuevo_usuario' creado con éxito!</div>";
+    if (empty($nuevo_usuario) || empty($password_plana) || empty($nombre_real)) {
+        $mensaje = "<div class='alert error'><i class='fas fa-times-circle'></i> Completa todos los campos.</div>";
+    } elseif (strlen($password_plana) < 6) {
+        $mensaje = "<div class='alert error'><i class='fas fa-times-circle'></i> La contraseña debe tener al menos 6 caracteres.</div>";
+    } else {
+        $check = $pdo->prepare("SELECT id FROM administradores WHERE usuario = ? LIMIT 1");
+        $check->execute([$nuevo_usuario]);
+        if ($check->fetch()) {
+            $mensaje = "<div class='alert error'><i class='fas fa-times-circle'></i> Ese nombre de usuario ya existe.</div>";
         } else {
-            $mensaje = "<div class='alert error'>Error al crear el administrador.</div>";
+            $password_encriptada = password_hash($password_plana, PASSWORD_BCRYPT);
+            $stmt = $pdo->prepare("INSERT INTO administradores (usuario, password, nombre, rol) VALUES (?, ?, ?, 0)");
+            if ($stmt->execute([$nuevo_usuario, $password_encriptada, $nombre_real])) {
+                $mensaje = "<div class='alert success'><i class='fas fa-check-circle'></i> Administrador creado con éxito.</div>";
+            } else {
+                $mensaje = "<div class='alert error'><i class='fas fa-times-circle'></i> Error al crear el administrador.</div>";
+            }
         }
     }
 }
@@ -38,19 +43,39 @@ if (isset($_POST['registrar_admin'])) {
 // 2. LÓGICA PARA CAMBIAR CONTRASEÑA DE UN ADMIN
 if (isset($_POST['cambiar_password'])) {
     csrf_validate();
-    $admin_id       = $_POST['id_admin'];
-    $nueva_pass_txt = trim($_POST['nueva_password']);
+    $admin_id       = (int)($_POST['id_admin'] ?? 0);
+    $nueva_pass_txt = trim($_POST['nueva_password'] ?? '');
 
-    if (!empty($admin_id) && !empty($nueva_pass_txt)) {
+    if (!$admin_id || empty($nueva_pass_txt)) {
+        $mensaje = "<div class='alert error'><i class='fas fa-times-circle'></i> Datos incompletos.</div>";
+    } elseif (strlen($nueva_pass_txt) < 6) {
+        $mensaje = "<div class='alert error'><i class='fas fa-times-circle'></i> La contraseña debe tener al menos 6 caracteres.</div>";
+    } else {
         $nueva_pass_encriptada = password_hash($nueva_pass_txt, PASSWORD_BCRYPT);
-        
-        $sql = "UPDATE administradores SET password = ? WHERE id = ? AND rol = 0";
-        $stmt = $pdo->prepare($sql);
-        
-        if ($stmt->execute([$nueva_pass_encriptada, $admin_id])) {
-            $mensaje = "<div class='alert success'>Contraseña actualizada correctamente.</div>";
+        $stmt = $pdo->prepare("UPDATE administradores SET password = ? WHERE id = ? AND rol = 0");
+        if ($stmt->execute([$nueva_pass_encriptada, $admin_id]) && $stmt->rowCount() > 0) {
+            $mensaje = "<div class='alert success'><i class='fas fa-check-circle'></i> Contraseña actualizada correctamente.</div>";
         } else {
-            $mensaje = "<div class='alert error'>Error al actualizar la contraseña.</div>";
+            $mensaje = "<div class='alert error'><i class='fas fa-times-circle'></i> No se pudo actualizar. Verifica el administrador.</div>";
+        }
+    }
+}
+
+// DAR DE BAJA: solo permite eliminar administradores normales.
+if (isset($_POST['eliminar_admin'])) {
+    csrf_validate();
+    $admin_id = (int)($_POST['id_admin'] ?? 0);
+
+    if (!$admin_id) {
+        $mensaje = "<div class='alert error'><i class='fas fa-times-circle'></i> ID inválido.</div>";
+    } elseif ($admin_id === (int)$_SESSION['admin_id']) {
+        $mensaje = "<div class='alert error'><i class='fas fa-times-circle'></i> No puedes eliminar tu propia cuenta.</div>";
+    } else {
+        $stmt = $pdo->prepare("DELETE FROM administradores WHERE id = ? AND rol = 0");
+        if ($stmt->execute([$admin_id]) && $stmt->rowCount() > 0) {
+            $mensaje = "<div class='alert success'><i class='fas fa-check-circle'></i> Administrador eliminado correctamente.</div>";
+        } else {
+            $mensaje = "<div class='alert error'><i class='fas fa-times-circle'></i> No se pudo eliminar. Solo se pueden eliminar admins normales.</div>";
         }
     }
 }
@@ -227,6 +252,20 @@ $admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
             background: #d35400;
         }
 
+        .btn-baja {
+            background: #c0392b;
+            color: white;
+            border: none;
+            padding: 7px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-baja:hover {
+            background: #922b21;
+        }
+
         /* --- ALERTAS --- */
         .alert {
             padding: 12px 15px;
@@ -276,11 +315,12 @@ $admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <th>Nombre</th>
                                 <th>Usuario</th>
                                 <th>Restablecer Contraseña</th>
+                                <th>Baja</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php if(empty($admins)): ?>
-                                <tr><td colspan="3" style="text-align:center; color:#777;">No hay administradores registrados todavía.</td></tr>
+                                <tr><td colspan="4" style="text-align:center; color:#777;">No hay administradores registrados todavía.</td></tr>
                             <?php endif; ?>
                             <?php foreach ($admins as $ad): ?>
                             <tr>
@@ -290,9 +330,18 @@ $admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <form method="POST" class="inline-form">
                                         <?php csrf_field(); ?>
                                         <input type="hidden" name="id_admin" value="<?= $ad['id'] ?>">
-                                        <input type="password" name="nueva_password" placeholder="Nueva clave..." required autocomplete="new-password">
+                                        <input type="password" name="nueva_password" placeholder="Nueva clave..." required autocomplete="new-password" minlength="6">
                                         <button type="submit" name="cambiar_password" class="btn-key" title="Actualizar contraseña">
                                             <i class="fas fa-key"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form method="POST" onsubmit="return confirm('¿Dar de baja a <?= htmlspecialchars($ad['nombre'], ENT_QUOTES) ?>? Esta acción no se puede deshacer.')">
+                                        <?php csrf_field(); ?>
+                                        <input type="hidden" name="id_admin" value="<?= $ad['id'] ?>">
+                                        <button type="submit" name="eliminar_admin" class="btn-baja" title="Dar de baja">
+                                            <i class="fas fa-user-times"></i>
                                         </button>
                                     </form>
                                 </td>
