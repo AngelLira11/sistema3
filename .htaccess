@@ -1,0 +1,8 @@
+Options -Indexes
+
+<FilesMatch "^(\.env|composer\.(json|lock)|.*\.(sql|log|pem))$">
+    Require all denied
+</FilesMatch>
+
+RewriteEngine On
+RewriteRule ^(?:src|vendor|db|doc\ viejos)(?:/|$) - [F,L,NC]
