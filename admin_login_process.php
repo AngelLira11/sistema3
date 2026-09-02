@@ -18,7 +18,7 @@ if (empty($usuario_input) || empty($password_input)) {
 try {
     $pdo = getConexion();
     
-    $stmt = $pdo->prepare("SELECT id, usuario, password, nombre FROM administradores WHERE usuario = ? LIMIT 1");
+    $stmt = $pdo->prepare("SELECT id, usuario, password, nombre, rol FROM administradores WHERE usuario = ? LIMIT 1");
     $stmt->execute([$usuario_input]);
     $admin = $stmt->fetch();
 
@@ -26,9 +26,10 @@ try {
         session_regenerate_id(true);
 
         // Guardamos los datos en la sesión
-        $_SESSION['admin_id'] = $admin['id'];
-        $_SESSION['admin_nombre'] = $admin['nombre'];
-        $_SESSION['es_admin'] = true;
+        $_SESSION['admin_id']     = $admin['id'];
+        $_SESSION['admin_nombre']  = $admin['nombre'];
+        $_SESSION['admin_rol']     = (int)$admin['rol']; // 0=admin, 1=superadmin
+        $_SESSION['es_admin']      = true;
 
         header('Location: admin_dashboard.php');
         exit;

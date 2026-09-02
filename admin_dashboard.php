@@ -84,14 +84,18 @@ $opciones = [
             <img src="img/logotipo.png" alt="Logo ITL" class="logo-min">
             <h1>Control de Titulación</h1>
             <div class="user-info">
-                <span><i class="fas fa-user-shield"></i> <?= $_SESSION['admin_nombre'] ?? 'Administrador' ?></span>
-                
-                <?php if (isset($_SESSION['admin_rol']) && $_SESSION['admin_rol'] == 1): ?>
-                    <a href="gestion_admins.php" class="btn-accion" style="background-color: #2c3e50; color: #fff; margin-right: 10px;">
+                <span>
+                    <i class="fas fa-<?= ($_SESSION['admin_rol'] ?? 0) == 1 ? 'user-cog' : 'user-shield' ?>"></i>
+                    <?= htmlspecialchars($_SESSION['admin_nombre'] ?? 'Administrador') ?>
+                    <?php if (($_SESSION['admin_rol'] ?? 0) == 1): ?>
+                        <span style="background:#D4AF37;color:#000;font-size:0.7rem;font-weight:bold;padding:2px 8px;border-radius:4px;margin-left:6px;vertical-align:middle;">SUPERADMIN</span>
+                    <?php endif; ?>
+                </span>
+                <?php if (($_SESSION['admin_rol'] ?? 0) == 1): ?>
+                    <a href="gestion_admins.php" class="btn-salir" style="background:rgba(255,255,255,0.18);margin-right:6px;">
                         <i class="fas fa-users-cog"></i> Gestionar Admins
                     </a>
                 <?php endif; ?>
-
                 <a href="logout.php" class="btn-salir">Salir</a>
             </div>
         </div>
